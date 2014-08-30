@@ -50,6 +50,15 @@ function log() {
 }
 
 /**
+ * DOM
+ */
+
+function listen(event, c) {
+    c = c || chan(1);
+    document.addEventListener(event, partial(chan.put, c));
+}
+
+/**
  * Math
  */
 
@@ -195,7 +204,12 @@ Object.defineProperty(Array.prototype, 'tail', {
     }
 });
 
-// This is fucking nuts. Yes, it will stack overflow.
+// Clojure's (loop) with rebinding but without the macro-ness.
+// It's fucking nuts. Yes, it will stack overflow.
 function loop(fn) {
-    return fn(partial(loop, fn));
+    return apply(
+        fn,
+        partial(loop, fn),
+        arr(arguments, 1)
+    );
 }
