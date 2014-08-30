@@ -123,6 +123,10 @@ function concat(a, b) {
     return a.concat(b);
 }
 
+function cons(a, b) {
+    return concat(a, [b]);
+}
+
 function head(a) {
     return a.head;
 }
@@ -138,6 +142,10 @@ function length(a) {
 /**
  * Transducers
  */
+
+function transduce(transducer, reducer, seed, coll) {
+    return coll.reduce(transducer(reducer), seed);
+}
 
 function mapping(f) {
     return function (f1) {

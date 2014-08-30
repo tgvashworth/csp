@@ -2,10 +2,10 @@ var c = chan(
     1,
     compose(
         filtering(function (e) {
-            return even(e.pageX) && even(e.pageY);
+            return even(e.x) && even(e.y);
         }),
         mapping(function (e) {
-            return e.type;
+            return [e.type, e.x, e.y];
         })
     )
 );

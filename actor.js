@@ -17,7 +17,7 @@ function chan(size, fn) {
         buffer: [],
         consumers: [],
         size: size,
-        reducer: fn || mapping(identity)
+        transducer: fn || mapping(identity)
     };
 }
 
@@ -35,11 +35,8 @@ chan.take = function take(c, cb) {
 
 chan.put = function put(c, v) {
     c.buffer = c.buffer.concat(
-        [v].reduce(
-            // Reduce over the new buffer using the reducer
-            c.reducer(concat),
-            []
-        )
+        // Reduce the new value using the transducer, reducing the result using cons
+        transduce(c.transducer, cons, [], [v])
     ).slice(0, c.size);
     chan.run(c);
     return c;
