@@ -1,6 +1,6 @@
 # CSP/Actor/Transducer Experiments
 
-Bit of messing around.
+Bit of messing around. WIP.
 
 Prior work:
 
