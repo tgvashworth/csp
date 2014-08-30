@@ -1,4 +1,4 @@
-# CSP/Actor/Transducer Experiments
+# CSP/Transducer Experiments
 
 Bit of messing around. WIP.
 
@@ -9,7 +9,7 @@ Prior work:
 - Transducers from [Clojure](http://blog.cognitect.com/blog/2014/8/6/transducers-are-coming)
 - [David Nolen](https://github.com/swannodette)'s [core.async webinar](http://go.cognitect.com/core_async)
 
-Code that does stuff is in `app.js`, and the CSP/Actor stuff is in `actor.js`, there's a library of functions in `lib.js`.
+Code that does stuff is in `app.js`, the CSP stuff is in `channel.js` and there's a library of functions in `lib.js`.
 
 ## License
 
