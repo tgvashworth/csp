@@ -53,9 +53,10 @@ function log() {
  * DOM
  */
 
-function listen(event, c) {
+function listen(elem, type, c) {
     c = c || chan(1);
-    document.addEventListener(event, partial(chan.put, c));
+    elem.addEventListener(type, partial(chan.put, c));
+    return c;
 }
 
 /**
