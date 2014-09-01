@@ -95,6 +95,14 @@ function odd(a) {
     return !even(a);
 }
 
+function min() {
+    return Math.min.apply(Math, arguments);
+}
+
+function max() {
+    return Math.max.apply(Math, arguments);
+}
+
 /**
  * Ord
  */
@@ -137,6 +145,12 @@ function cons(a, b) {
     return concat(a, [b]);
 }
 
+function join(fst /*, rest...*/) {
+    if (!fst) return [];
+    var rest = arr(arguments, 1);
+    return concat(fst, apply(join, rest));
+}
+
 function head(a) {
     return a.head;
 }
@@ -147,6 +161,37 @@ function tail(a) {
 
 function length(a) {
     return a.length;
+}
+
+function shuffle(xs) {
+    if (!length(xs)) return [];
+    var pivot = ~~(Math.random() * length(xs));
+    return concat(
+        [xs[pivot]],
+        shuffle(
+            join(
+                arr(xs, 0, pivot),
+                arr(xs, pivot + 1)
+            )
+        )
+    );
+
+}
+
+function map(f, xs) {
+    return xs.reduce(function (ys, x) {
+        return cons(ys, f(x));
+    }, []);
+}
+
+function filter(f, xs) {
+    return xs.reduce(function (xs, x) {
+        return (
+            f(input) ?
+                cons(xs, x) :
+                xs
+        );
+    }, []);
 }
 
 /**
