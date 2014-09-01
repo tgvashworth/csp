@@ -32,21 +32,21 @@ function filtering(pred) {
  * Filter generators
  */
 
- function gateFilter(opener, closer) {
-     var open = false;
-     return function (e) {
-         if (e.type === opener) {
-             open = true;
-         }
-         if (e.type === closer) {
-             open = false;
-         }
-         return open;
-     };
- };
+function gateFilter(opener, closer) {
+    var open = false;
+    return function (e) {
+        if (e.type === opener) {
+            open = true;
+        }
+        if (e.type === closer) {
+            open = false;
+        }
+        return open;
+    };
+};
 
- function keyFilter(key, value) {
-     return function (e) {
-         return (e[key] === value);
-     };
- }
+function keyFilter(key, value) {
+    return function (e) {
+        return (e[key] === value);
+    };
+}

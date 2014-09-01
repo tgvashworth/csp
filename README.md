@@ -11,6 +11,12 @@ Prior work:
 
 Code that does stuff is in `app.js`, the CSP stuff is in `channel.js` and there's a library of functions in `lib.js`.
 
+## TODO
+
+- [ ] `close`
+- [ ] `alts`
+- [ ] `timeout`
+
 ## License
 
 MIT
