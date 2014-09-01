@@ -178,22 +178,6 @@ function shuffle(xs) {
 
 }
 
-function map(f, xs) {
-    return xs.reduce(function (ys, x) {
-        return cons(ys, f(x));
-    }, []);
-}
-
-function filter(f, xs) {
-    return xs.reduce(function (xs, x) {
-        return (
-            f(input) ?
-                cons(xs, x) :
-                xs
-        );
-    }, []);
-}
-
 /**
  * Stupid shit
  */

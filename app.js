@@ -10,7 +10,6 @@ c2.name = 'c2';
 //     });
 // }, 0);
 
-
 chan.alts([c, c2, timeout(1000 * 5)], function (v, c) {
     console.log('got %O from %s', v, c.name);
 });
