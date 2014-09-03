@@ -28,6 +28,10 @@ function filtering(pred) {
     }
 }
 
+function reduce(f, v, xs) {
+    return xs.reduce(f, v);
+}
+
 function map(f, xs) {
     return xs.reduce(mapping(f)(cons), []);
 }

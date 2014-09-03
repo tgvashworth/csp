@@ -16,6 +16,13 @@ function apply(fn /*, arg, ..., args... */) {
     );
 }
 
+function call(fn /*, arg, ... */) {
+    return fn.apply(
+        null,
+        arr(arguments, 1)
+    );
+}
+
 function partial(fn /*, args... */) {
     var args = arr(arguments, 1);
     return function () {
@@ -42,6 +49,12 @@ function compose(/*fns..., fn*/) {
     var fns = apply(compose, args.slice(0, -1));
     return function composed(x) {
         return fns(fn(x));
+    };
+}
+
+function not(f) {
+    return function () {
+        return !apply(f, arr(arguments));
     };
 }
 
@@ -176,6 +189,22 @@ function shuffle(xs) {
         )
     );
 
+}
+
+/**
+ * Maps (objects, yo)
+ */
+
+function getFrom(o, k) {
+    return o[k];
+}
+
+function get(k, o) {
+    return getFrom(o, k);
+}
+
+function has(o, k) {
+    return (typeof o[k] !== 'undefined');
 }
 
 /**
