@@ -13,9 +13,26 @@ Code that does stuff is in `app.js`, the CSP stuff is in `channel.js` and there'
 
 ## TODO
 
-- [ ] `close`
-- [ ] `alts`
-- [ ] `timeout`
+Channels
+
+- [x] `close`
+- [x] `alts`
+- [x] `timeout`
+- [ ] `dropping-buffer`
+- [ ] `sliding-buffer`
+- [ ] `mult`
+- [ ] `merge`
+
+Transducers
+
+- [ ] `take`
+- [ ] Extract them to their own library (with tests!)
+
+Other stuff
+
+- [ ] Implement lib tail recursively
+
+
 
 ## License
 
