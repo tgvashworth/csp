@@ -1,0 +1,17 @@
+{
+  "name": "csp",
+  "version": "0.0.0",
+  "description": "Bit of messing around. WIP.",
+  "main": "actor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "watchify": "^1.0.2",
+    "browserify": "^5.11.0",
+    "tape": "^2.14.0",
+    "faucet": "0.0.1"
+  }
+}

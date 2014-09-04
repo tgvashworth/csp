@@ -1,11 +1,16 @@
+'use strict';
+var _ = require('./lib');
+
 /**
  * Transducers
  */
 
+exports.transduce = transduce;
 function transduce(transducer, reducer, seed, coll) {
     return coll.reduce(transducer(reducer), seed);
 }
 
+exports.mapping = mapping;
 function mapping(f) {
     return function (f1) {
         return function (result, input) {
@@ -17,6 +22,7 @@ function mapping(f) {
     }
 }
 
+exports.filtering = filtering;
 function filtering(pred) {
     return function (f1) {
         return function (result, input) {
@@ -28,22 +34,26 @@ function filtering(pred) {
     }
 }
 
+exports.reduce = reduce;
 function reduce(f, v, xs) {
     return xs.reduce(f, v);
 }
 
+exports.map = map;
 function map(f, xs) {
-    return xs.reduce(mapping(f)(cons), []);
+    return xs.reduce(mapping(f)(_.cons), []);
 }
 
+exports.filter = filter;
 function filter(f, xs) {
-    return xs.reduce(filtering(f)(cons), []);
+    return xs.reduce(filtering(f)(_.cons), []);
 }
 
 /**
  * Filter generators
  */
 
+exports.gateFilter = gateFilter;
 function gateFilter(opener, closer) {
     var open = false;
     return function (e) {
@@ -57,6 +67,7 @@ function gateFilter(opener, closer) {
     };
 };
 
+exports.keyFilter = keyFilter;
 function keyFilter(key, value) {
     return function (e) {
         return (e[key] === value);

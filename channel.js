@@ -1,117 +1,122 @@
+'use strict';
+
+var trans = require('./transducers');
+var _ = require('./lib');
+
 /**
  * Channel
  */
 
-var chan = (function () {
-    'use strict';
+/**
+ * uid generation
+ */
 
-    /**
-     * uid generation
-     */
+var uidc = 0;
+function uid(str) {
+    return (str + '-' + uidc++);
+}
 
-    var uidc = 0;
-    function uid(str) {
-        return (str + '-' + uidc++);
+/**
+ * box pool
+ */
+var idToBox = {};
+
+/**
+ * Chan
+ */
+
+function chan(size, transducer) {
+    return {
+        uid: uid('chan'),
+        buffer: [],
+        consumers: [],
+        size: size,
+        transducer: transducer || trans.mapping(_.identity),
+        closed: false,
+        timeout: undefined
+    };
+}
+
+// Implementation
+
+var _chan = {};
+_chan.run = function run(c) {
+    c.timeout = undefined;
+    if (!((c.buffer.length || c.closed) && c.consumers.length)) {
+        return c;
     }
 
-    /**
-     * box pool
-     */
-    var idToBox = {};
+    var shuffled = trans.filter(
+        _.partial(_.has, idToBox),
+        _.shuffle(c.consumers)
+    );
+    var fn = _.getFrom(idToBox, _.head(shuffled))
 
-    /**
-     * Chan
-     */
+    fn((c.buffer.length ? c.buffer.shift() : undefined), c);
+    c.consumers = _.tail(shuffled);
 
-    function chan(size, transducer) {
-        return {
-            uid: uid('chan'),
-            buffer: [],
-            consumers: [],
-            size: size,
-            transducer: transducer || mapping(identity),
-            closed: false,
-            timeout: nil
-        };
+    return _chan.run(c);
+};
+
+_chan.dispatch = function dispatch(c) {
+    !c.timeout && (c.timeout = setTimeout(_.partial(_chan.run, c), 0));
+    return c;
+};
+
+_chan.add = function (c, cb) {
+    c.consumers = _.cons(c.consumers, cb);
+    return c;
+};
+
+function box(cb) {
+    var id = uid('box');
+    idToBox[id] = _.partial(_.apply, function () {
+        delete idToBox[id];
+        return _.apply(cb, _.arr(arguments));
+    });
+    return id;
+}
+
+// Public
+
+chan.take = function take(c, cb) {
+    return _chan.add(
+        _chan.dispatch(c),
+        box(cb)
+    );
+};
+
+chan.put = function put(c, v) {
+    if (v !== undefined && !c.closed) {
+        c.buffer = _.concat(
+            c.buffer,
+            // Reduce the new value using the transducer, reducing the result using cons
+            trans.transduce(c.transducer, _.cons, [], [v])
+        ).slice(0, c.size);
     }
+    _chan.dispatch(c);
+    return c;
+};
 
-    // Implementation
+chan.close = function close(c) {
+    c.closed = true;
+    return _chan.dispatch(c);
+};
 
-    var _chan = {};
-    _chan.run = function run(c) {
-        c.timeout = nil;
-        if ((c.buffer.length || c.closed) && c.consumers.length) {
-            var shuffled = filter(partial(has, idToBox), shuffle(c.consumers));
-            getFrom(idToBox, head(shuffled))(
-                (c.buffer.length ? c.buffer.shift() : nil),
-                c
-            );
-            c.consumers = tail(shuffled);
-        }
-        return c;
-    };
-
-    _chan.dispatch = function dispatch(c) {
-        !c.timeout && (c.timeout = setTimeout(partial(_chan.run, c), 0));
-        return c;
-    };
-
-    _chan.add = function (c, cb) {
-        c.consumers = cons(c.consumers, cb);
-        return c;
-    };
-
-    function box(cb) {
-        var id = uid('box');
-        idToBox[id] = partial(apply, function () {
-            delete idToBox[id];
-            return apply(cb, arr(arguments));
-        });
-        return id;
-    }
-
-    // Public
-
-    chan.take = function take(c, cb) {
+chan.alts = function alts(cs, cb) {
+    var altbox = box(cb);
+    return trans.map(function (c) {
         return _chan.add(
             _chan.dispatch(c),
-            box(cb)
+            altbox
         );
-    };
+    }, cs);
+};
 
-    chan.put = function put(c, v) {
-        if (v !== nil && !c.closed) {
-            c.buffer = concat(
-                c.buffer,
-                // Reduce the new value using the transducer, reducing the result using cons
-                transduce(c.transducer, cons, [], [v])
-            ).slice(0, c.size);
-        }
-        _chan.dispatch(c);
-        return c;
-    };
+chan.timeout = function timeout(time) {
+    var c = chan(0);
+    setTimeout(partial(chan.close, c), time);
+    return c;
+};
 
-    chan.close = function close(c) {
-        c.closed = true;
-        return _chan.dispatch(c);
-    };
-
-    chan.alts = function alts(cs, cb) {
-        var altbox = box(cb);
-        return map(function (c) {
-            return _chan.add(
-                _chan.dispatch(c),
-                altbox
-            );
-        }, cs);
-    };
-
-    chan.timeout = function timeout(time) {
-        var c = chan(0);
-        setTimeout(partial(chan.close, c), time);
-        return c;
-    };
-
-    return chan;
-
-}());
+module.exports = chan;

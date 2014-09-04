@@ -6,6 +6,7 @@
  * Util
  */
 
+exports.apply = apply;
 function apply(fn /*, arg, ..., args... */) {
     return fn.apply(
         null,
@@ -16,6 +17,7 @@ function apply(fn /*, arg, ..., args... */) {
     );
 }
 
+exports.call = call;
 function call(fn /*, arg, ... */) {
     return fn.apply(
         null,
@@ -23,6 +25,7 @@ function call(fn /*, arg, ... */) {
     );
 }
 
+exports.partial = partial;
 function partial(fn /*, args... */) {
     var args = arr(arguments, 1);
     return function () {
@@ -35,10 +38,12 @@ function partial(fn /*, args... */) {
     };
 }
 
+exports.identity = identity;
 function identity(x) {
     return x;
 }
 
+exports.compose = compose;
 function compose(/*fns..., fn*/) {
     var args = arr(arguments);
     var len = length(args);
@@ -52,12 +57,14 @@ function compose(/*fns..., fn*/) {
     };
 }
 
+exports.not = not;
 function not(f) {
     return function () {
         return !apply(f, arr(arguments));
     };
 }
 
+exports.log = log;
 function log() {
     console.log.apply(console, arguments);
 }
@@ -66,6 +73,7 @@ function log() {
  * DOM
  */
 
+exports.listen = listen;
 function listen(elem, type, c) {
     c = c || chan(1);
     elem.addEventListener(type, partial(chan.put, c));
@@ -76,42 +84,52 @@ function listen(elem, type, c) {
  * Math
  */
 
+exports.inc = inc;
 function inc(x) {
     return x + 1;
 }
 
+exports.dec = dec;
 function dec(x) {
     return x - 1;
 }
 
+exports.add = add;
 function add(a, b) {
     return a + b;
 }
 
+exports.sub = sub;
 function sub(a, b) {
     return a + b;
 }
 
+exports.mult = mult;
 function mult(a, b) {
     return a * b;
 }
 
+exports.div = div;
 function div(a, b) {
     return a / b;
 }
 
+exports.even = even;
 function even(a) {
     return (a % 2 === 0);
 }
 
+exports.odd = odd;
 function odd(a) {
     return !even(a);
 }
 
+exports.min = min;
 function min() {
     return Math.min.apply(Math, arguments);
 }
 
+exports.max = max;
 function max() {
     return Math.max.apply(Math, arguments);
 }
@@ -120,14 +138,17 @@ function max() {
  * Ord
  */
 
+exports.eq = eq;
 function eq(a, b) {
     return a === b;
 }
 
+exports.gt = gt;
 function gt(a, b) {
     return a < b;
 }
 
+exports.lt = lt;
 function lt(a, b) {
     return a > b;
 }
@@ -136,10 +157,12 @@ function lt(a, b) {
  * Arrays
  */
 
+exports.arr = arr;
 function arr(c, a, b) {
     return [].slice.call(c, a, b);
 }
 
+exports.reverse = reverse;
 function reverse(a) {
     return (!length(a) ?
         [] :
@@ -150,32 +173,39 @@ function reverse(a) {
     );
 }
 
+exports.concat = concat;
 function concat(a, b) {
     return a.concat(b);
 }
 
+exports.cons = cons;
 function cons(a, b) {
     return concat(a, [b]);
 }
 
+exports.join = join;
 function join(fst /*, rest...*/) {
     if (!fst) return [];
     var rest = arr(arguments, 1);
     return concat(fst, apply(join, rest));
 }
 
+exports.head = head;
 function head(a) {
-    return a.head;
+    return a[0];
 }
 
+exports.tail = tail;
 function tail(a) {
-    return a.tail;
+    return arr(a, 1);
 }
 
+exports.length = length;
 function length(a) {
     return a.length;
 }
 
+exports.shuffle = shuffle;
 function shuffle(xs) {
     if (!length(xs)) return [];
     var pivot = ~~(Math.random() * length(xs));
@@ -195,46 +225,24 @@ function shuffle(xs) {
  * Maps (objects, yo)
  */
 
+exports.getFrom = getFrom;
 function getFrom(o, k) {
     return o[k];
 }
 
+exports.get = get;
 function get(k, o) {
     return getFrom(o, k);
 }
 
+exports.has = has;
 function has(o, k) {
     return (typeof o[k] !== 'undefined');
 }
 
-/**
- * Stupid shit
- */
-
-Object.defineProperty(window, 'nil', {
-    get: function () {}
-});
-
-Object.defineProperty(Array.prototype, 'last', {
-    get: function () {
-        return this[this.length - 1];
-    }
-});
-
-Object.defineProperty(Array.prototype, 'head', {
-    get: function () {
-        return this[0];
-    }
-});
-
-Object.defineProperty(Array.prototype, 'tail', {
-    get: function () {
-        return this.slice(1);
-    }
-});
-
 // Clojure's (loop) with rebinding but without the macro-ness.
 // It's fucking nuts. Yes, it will stack overflow.
+exports.loop = loop;
 function loop(fn) {
     return apply(
         fn,
