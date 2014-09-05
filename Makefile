@@ -21,7 +21,7 @@ clean:
 watch: $(DEST)
 	watchify $(ENTRY) $(TRANSFORMS) -o $(DEST) -vd
 
-test: $(DEST) $(TESTS)
+test: all $(TESTS)
 	@tape $(TESTS) | faucet
 
 $(DEST): $(shell browserify $(TRANSFORMS) --list $(ENTRY))

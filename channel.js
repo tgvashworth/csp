@@ -50,6 +50,11 @@ _chan.run = function run(c) {
         _.partial(_.has, idToBox),
         _.shuffle(c.consumers)
     );
+
+    if (!shuffled.length) {
+        return c;
+    }
+
     var fn = _.getFrom(idToBox, _.head(shuffled))
 
     fn((c.buffer.length ? c.buffer.shift() : undefined), c);
@@ -115,7 +120,7 @@ chan.alts = function alts(cs, cb) {
 
 chan.timeout = function timeout(time) {
     var c = chan(0);
-    setTimeout(partial(chan.close, c), time);
+    setTimeout(_.partial(chan.close, c), time);
     return c;
 };
 
