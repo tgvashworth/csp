@@ -45,7 +45,7 @@ test('taking from a channel', function (t) {
 
     test('every taker gets a value when put first', function (t) {
         t.plan(2);
-        var c = chan();
+        var c = chan(2);
         var cb = function (v) {
             t.ok(v);
             if (v === 2) t.end();
@@ -60,7 +60,7 @@ test('taking from a channel', function (t) {
 
     test('every taker gets a value when put last', function (t) {
         t.plan(2);
-        var c = chan();
+        var c = chan(2);
         var cb = function (v) {
             t.ok(v);
             if (v === 2) t.end();
@@ -75,7 +75,7 @@ test('taking from a channel', function (t) {
 
     test('every taker gets a value when put interleaved', function (t) {
         t.plan(2);
-        var c = chan();
+        var c = chan(2);
         var cb = function (v) {
             t.ok(v);
             if (v === 2) t.end();
@@ -173,8 +173,8 @@ test('alts', function (t) {
     });
 
     t.test('alts is only triggered once alongside a take', function (t) {
-        var c = chan();
-        var c2 = chan();
+        var c = chan(2);
+        var c2 = chan(2);
         var cb = function (v, tc) {
             t.ok(v);
             t.equal(c, tc);

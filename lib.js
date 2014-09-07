@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * A library of functional stuff. Does things like change Array.prototype. #yolo
  */
@@ -67,6 +69,11 @@ function not(f) {
 exports.log = log;
 function log() {
     console.log.apply(console, arguments);
+}
+
+exports.opt = opt;
+function opt(x, d) {
+    return (typeof x === "undefined" ? d : x);
 }
 
 /**
