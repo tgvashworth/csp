@@ -1,4 +1,4 @@
-var chan = require('./channel');
+var chan = require('./lib/channel');
 
 window.chan = chan;
 

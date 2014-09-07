@@ -1,6 +1,6 @@
 var test = require('tape');
 
-var chan = require('../channel');
+var chan = require('../lib/channel');
 
 test('making channels', function (t) {
     var c = chan();
